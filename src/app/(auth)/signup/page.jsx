@@ -1,5 +1,8 @@
-"use client"
+"use client";
+import { signIn, signUp } from "@/lib/auth-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaGithub } from "react-icons/fa";
 
@@ -26,13 +29,13 @@ const GoogleIcon = () => (
 );
 
 const SignUpPage = () => {
-    const handleSubmit = async (e) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-
-    
 
     if (!data.name || !data.email || !data.password || !data.confirmPassword) {
       toast.error("সবগুলো ফিল্ড পূরণ করুন!");
@@ -49,13 +52,58 @@ const SignUpPage = () => {
       return;
     }
 
-    console.log("SingUp Data",data);
+    setIsLoading(true);
+
+    try {
+      const { data: resData, error } = await signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      });
+
+      if (error) {
+        toast.error("অ্যাকাউন্ট তৈরি করা সম্ভব হয়নি! আবার চেষ্টা করুন।");
+        setIsLoading(false);
+        return;
+      }
+
+      if (resData?.user?.name) {
+        toast.success(
+          "অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে, চালিয়ে যেতে সাইন ইন করুন",
+        );
+        router.push("/signin");
+      }
+    } catch {
+      toast.error("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleGooleSignIn = async () => {
+    try {
+      await signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch {
+      toast.error("গুগল দিয়ে সাইন ইন করা সম্ভব হয়নি!");
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    try {
+      await signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+    } catch {
+      toast.error("GitHub দিয়ে সাইন ইন করা সম্ভব হয়নি!");
+    }
   };
   return (
     <main className="min-h-screen bg-[#f3f6f4] flex flex-col justify-center my-10 px-4 sm:px-6 lg:px-8">
-      
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
-        
         {/* Header Section */}
         <div className="text-center mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-700">
@@ -122,12 +170,13 @@ const SignUpPage = () => {
             </div>
 
             {/* SignUp Button */}
+            
             <button
               type="submit"
-             
-              className="btn btn-sm sm:btn-md w-full bg-[#05893e] hover:bg-[#087347] border-none text-white font-medium rounded-lg text-sm sm:text-base shadow-sm transition-all duration-150 cursor-pointer"
+              disabled={isLoading}
+              className="btn btn-sm sm:btn-md w-full bg-[#05893e] hover:bg-[#087347] border-none text-white font-medium rounded-lg text-sm sm:text-base shadow-sm transition-all duration-150 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              অ্যাকাউন্ট তৈরি করুন
+              {isLoading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "অ্যাকাউন্ট তৈরি করুন"}
             </button>
           </form>
 
@@ -142,18 +191,24 @@ const SignUpPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <button
               type="button"
+              onClick={handleGooleSignIn}
               className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2"
             >
               <GoogleIcon />
-              <span className="text-xs font-semibold">Google দিয়ে চালিয়ে যান</span>
+              <span className="text-xs font-semibold">
+                Google দিয়ে চালিয়ে যান
+              </span>
             </button>
 
             <button
               type="button"
+              onClick={handleGithubSignIn}
               className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2"
             >
               <FaGithub className="text-gray-700 text-sm shrink-0" />
-              <span className="text-xs font-semibold">GitHub দিয়ে চালিয়ে যান</span>
+              <span className="text-xs font-semibold">
+                GitHub দিয়ে চালিয়ে যান
+              </span>
             </button>
           </div>
 

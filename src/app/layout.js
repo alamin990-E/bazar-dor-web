@@ -22,7 +22,13 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col bg-[#f0f5f0]">
         {children}
-        <Toaster position="top-right" reverseOrder={false} />
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 3000,
+          }}
+        />
       </body>
     </html>
   );

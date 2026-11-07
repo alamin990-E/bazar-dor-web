@@ -1,6 +1,10 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
+import { signIn } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 // Google Icon
 const GoogleIcon = () => (
@@ -25,34 +29,81 @@ const GoogleIcon = () => (
 );
 
 const SignInPage = () => {
-      const handleSubmit = async (e) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
+    if (!data.email || !data.password) {
+      toast.error("ইমেইল এবং পাসওয়ার্ড দুটিই দিন!");
+      return;
+    }
 
-    console.log("SingIn Data",data);
+    setIsLoading(true);
+
+    try {
+      const { data: resData, error } = await signIn.email({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (error) {
+        toast.error("ইমেইল বা পাসওয়ার্ড ভুল হয়েছে!");
+        return;
+      }
+
+      if (resData?.user) {
+        toast.success("স্বাগতম সফলভাবে সাইন ইন হয়েছে");
+        router.push("/");
+        router.refresh();
+      }
+    } catch {
+      toast.error("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch {
+      toast.error("Google দিয়ে সাইন ইন করা সম্ভব হয়নি!");
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    try {
+      await signIn.social({
+        provider: "github",
+        callbackURL: "/",
+      });
+    } catch {
+      toast.error("GitHub দিয়ে সাইন ইন করা সম্ভব হয়নি!");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#f3f6f4] flex flex-col justify-center my-10 px-4 sm:px-6 lg:px-8">
-      
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
-        
         {/* Header Section */}
         <div className="text-center mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-700">
             সাইন ইন
           </h1>
           <p className="text-sm text-gray-700 mt-2">
-           বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে ঢুকুন।
+            বিস্তারিত দাম, বাজার তুলনা ও প্রোফাইল দেখতে অ্যাকাউন্টে ঢুকুন।
           </p>
         </div>
 
         {/* Card section */}
         <div className="w-full max-w-107 bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
-          <form onClick={handleSubmit} className="space-y-4">
-         
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">
@@ -82,9 +133,10 @@ const SignInPage = () => {
             {/* SignIn Button */}
             <button
               type="submit"
-              className="btn btn-sm sm:btn-md w-full bg-[#05893e] hover:bg-[#087347] border-none text-white font-medium rounded-lg text-sm sm:text-base shadow-sm transition-all duration-150 cursor-pointer"
+              disabled={isLoading}
+              className="btn btn-sm sm:btn-md w-full bg-[#05893e] hover:bg-[#087347] border-none text-white font-medium rounded-lg text-sm sm:text-base shadow-sm transition-all duration-150 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              সাইন ইন
+              {isLoading ? "সাইন ইন হচ্ছে..." : "সাইন ইন"}
             </button>
           </form>
 
@@ -99,18 +151,24 @@ const SignInPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <button
               type="button"
-              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2"
+              onClick={handleGoogleSignIn}
+              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2 cursor-pointer"
             >
               <GoogleIcon />
-              <span className="text-xs font-semibold">Google দিয়ে চালিয়ে যান</span>
+              <span className="text-xs font-semibold">
+                Google দিয়ে চালিয়ে যান
+              </span>
             </button>
 
             <button
               type="button"
-              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2"
+              onClick={handleGithubSignIn}
+              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2 cursor-pointer"
             >
               <FaGithub className="text-gray-700 text-sm shrink-0" />
-              <span className="text-xs font-semibold">GitHub দিয়ে চালিয়ে যান</span>
+              <span className="text-xs font-semibold">
+                GitHub দিয়ে চালিয়ে যান
+              </span>
             </button>
           </div>
 
