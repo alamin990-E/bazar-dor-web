@@ -79,7 +79,7 @@ const SignUpPage = () => {
       setIsLoading(false);
     }
   };
-  
+
   const handleGooleSignIn = async () => {
     try {
       await signIn.social({
@@ -228,7 +228,7 @@ const SignUpPage = () => {
         <div className="mt-5 text-center">
           <Link
             href="/"
-            className="text-sm text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-[12px] sm:text-[14px] text-gray-700 hover:text-gray-900 transition-colors"
           >
             ← হোম পেজে ফিরে যান
           </Link>
