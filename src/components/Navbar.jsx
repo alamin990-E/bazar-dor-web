@@ -8,8 +8,8 @@ import { signOut, useSession } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import DateShow from "./DateShow";
 import { FaUser } from "react-icons/fa";
-import { IoIosLogOut } from "react-icons/io";
 import { AiFillCaretDown } from "react-icons/ai";
+import { LogOut } from "lucide-react";
 
 const Navbar = () => {
   const router = useRouter();
@@ -93,18 +93,18 @@ const Navbar = () => {
                   <div className="flex flex-col gap-3">
                     <Link
                       href="/profile"
-                      className="flex items-center gap-2 text-sm font-medium px-3 py-2 text-[#1D271F] hover:bg-green-50 rounded-[10px] hover:text-green-700 transition-colors"
+                      className="flex items-center gap-2 text-[13px] md:text-[15px] font-medium px-3 py-2 text-[#1D271F] hover:bg-green-50 rounded-[10px] hover:text-green-700 transition-colors"
                     >
-                      <span className="text-[14px] md:text-[16px]"><FaUser /></span>
+                      <span><FaUser className="w-4 h-4"/></span>
                       আমার প্রোফাইল
                     </Link>
 
                     <button
                       type="button"
                       onClick={handleSignOut}
-                      className="flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-600 hover:bg-[#fef2f2] px-3 py-2 rounded-[10px] transition-colors cursor-pointer text-left"
+                      className="flex items-center gap-2 text-[13px] md:text-[15px] text-sm font-medium text-red-500 hover:text-red-600 hover:bg-[#fef2f2] px-3 py-2 rounded-[10px] transition-colors cursor-pointer text-left"
                     >
-                      <span className="text-[14px] md:text-[16px] leading-none"><IoIosLogOut /></span>
+                      <span className="leading-none"><LogOut className="w-4 h-4" /></span>
                       সাইন আউট
                     </button>
                   </div>

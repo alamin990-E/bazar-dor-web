@@ -1,12 +1,11 @@
 "use client";
-import { signIn, signUp } from "@/lib/auth-client";
+import { signIn, signUp, useSession } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaGithub } from "react-icons/fa";
 
-// Google Icon
 const GoogleIcon = () => (
   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
     <path
@@ -30,6 +29,7 @@ const GoogleIcon = () => (
 
 const SignUpPage = () => {
   const router = useRouter();
+  const { isPending: isSessionLoading } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,7 +74,7 @@ const SignUpPage = () => {
         router.push("/signin");
       }
     } catch {
-      toast.error("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
+      toast.error("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
     } finally {
       setIsLoading(false);
     }
@@ -101,15 +101,70 @@ const SignUpPage = () => {
       toast.error("GitHub দিয়ে সাইন ইন করা সম্ভব হয়নি!");
     }
   };
+
+  if (isSessionLoading) {
+    return (
+      <main className="min-h-screen bg-[#f3f6f4] flex flex-col justify-center my-10 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-6xl mx-auto flex flex-col items-center animate-pulse">
+          <div className="text-center mb-6 flex flex-col items-center">
+            <div className="h-8 w-48 bg-gray-200 rounded-md mb-2"></div>
+            <div className="h-4 w-64 bg-gray-200 rounded-md"></div>
+          </div>
+
+          <div className="w-full max-w-107 bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 space-y-4">
+            <div>
+              <div className="h-4 w-12 bg-gray-200 rounded-md mb-1.5"></div>
+              <div className="h-10 w-full bg-gray-100 rounded-lg"></div>
+            </div>
+
+            <div>
+              <div className="h-4 w-14 bg-gray-200 rounded-md mb-1.5"></div>
+              <div className="h-10 w-full bg-gray-100 rounded-lg"></div>
+            </div>
+
+            <div>
+              <div className="h-4 w-16 bg-gray-200 rounded-md mb-1.5"></div>
+              <div className="h-10 w-full bg-gray-100 rounded-lg"></div>
+            </div>
+
+            <div>
+              <div className="h-4 w-32 bg-gray-200 rounded-md mb-1.5"></div>
+              <div className="h-10 w-full bg-gray-100 rounded-lg"></div>
+            </div>
+
+            <div className="h-10 sm:h-12 w-full bg-gray-200 rounded-lg mt-2"></div>
+
+            <div className="relative flex py-5 items-center">
+              <div className="grow border-t border-gray-200"></div>
+              <div className="h-3 w-8 bg-gray-200 rounded-md mx-3"></div>
+              <div className="grow border-t border-gray-200"></div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="h-10 sm:h-12 bg-gray-100 rounded-lg"></div>
+              <div className="h-10 sm:h-12 bg-gray-100 rounded-lg"></div>
+            </div>
+
+            <div className="h-4 w-44 bg-gray-200 rounded-md mx-auto mt-6"></div>
+          </div>
+
+          <div className="mt-5">
+            <div className="h-4 w-36 bg-gray-200 rounded-md"></div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#f3f6f4] flex flex-col justify-center my-10 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
         {/* Header Section */}
         <div className="text-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-700">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1D271F]">
             অ্যাকাউন্ট তৈরি করুন
           </h1>
-          <p className="text-sm text-gray-700 mt-2">
+          <p className="text-sm text-[#1D271F] mt-2">
             বিনা খরচে সাইন আপ করে সব বিস্তারিত দাম দেখুন।
           </p>
         </div>
@@ -119,58 +174,58 @@ const SignUpPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-[#1D271F] mb-1.5">
                 নাম
               </label>
               <input
                 type="text"
                 name="name"
                 placeholder="যেমন: রহিম উদ্দিন"
-                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-gray-700"
+                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-[#1D271F]"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-[#1D271F] mb-1.5">
                 ইমেইল
               </label>
               <input
                 type="email"
                 name="email"
                 placeholder="you@example.com"
-                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-gray-700 "
+                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-[#1D271F] "
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-[#1D271F] mb-1.5">
                 পাসওয়ার্ড
               </label>
               <input
                 type="password"
                 name="password"
                 placeholder="কমপক্ষে ৮ অক্ষর"
-                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-gray-700 "
+                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-[#1D271F] "
               />
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-[#1D271F] mb-1.5">
                 পাসওয়ার্ড নিশ্চিত করুন
               </label>
               <input
                 type="password"
                 name="confirmPassword"
                 placeholder="আবার লিখুন"
-                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-gray-700 "
+                className="input input-bordered w-full bg-white border-gray-200 rounded-lg text-sm text-[#1D271F] "
               />
             </div>
 
             {/* SignUp Button */}
-            
+
             <button
               type="submit"
               disabled={isLoading}
@@ -183,7 +238,7 @@ const SignUpPage = () => {
           {/* Divider */}
           <div className="relative flex py-5 items-center">
             <div className="grow border-t border-gray-200"></div>
-            <span className="shrink-0 mx-3 text-xs text-gray-700">অথবা</span>
+            <span className="shrink-0 mx-3 text-xs text-[#1D271F]">অথবা</span>
             <div className="grow border-t border-gray-200"></div>
           </div>
 
@@ -192,7 +247,7 @@ const SignUpPage = () => {
             <button
               type="button"
               onClick={handleGooleSignIn}
-              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2"
+              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-[#1D271F] font-normal rounded-lg normal-case flex items-center justify-center gap-2"
             >
               <GoogleIcon />
               <span className="text-xs font-semibold">
@@ -203,9 +258,9 @@ const SignUpPage = () => {
             <button
               type="button"
               onClick={handleGithubSignIn}
-              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-normal rounded-lg normal-case flex items-center justify-center gap-2"
+              className="btn btn-sm sm:btn-md btn-outline border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-[#1D271F] font-normal rounded-lg normal-case flex items-center justify-center gap-2"
             >
-              <FaGithub className="text-gray-700 text-sm shrink-0" />
+              <FaGithub className="text-[#1D271F] text-sm shrink-0" />
               <span className="text-xs font-semibold">
                 GitHub দিয়ে চালিয়ে যান
               </span>
@@ -213,7 +268,7 @@ const SignUpPage = () => {
           </div>
 
           {/* Bottom Link */}
-          <div className="text-center mt-6 text-sm text-gray-700">
+          <div className="text-center mt-6 text-sm text-[#1D271F]">
             অ্যাকাউন্ট আছে?{" "}
             <Link
               href="/signin"
@@ -228,7 +283,7 @@ const SignUpPage = () => {
         <div className="mt-5 text-center">
           <Link
             href="/"
-            className="text-[12px] sm:text-[14px] text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-[12px] sm:text-[14px] text-[#1D271F] hover:text-[#1D271F] transition-colors"
           >
             ← হোম পেজে ফিরে যান
           </Link>
