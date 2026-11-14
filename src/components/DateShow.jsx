@@ -1,6 +1,9 @@
 import React from "react";
 
-const DateShow = () => {
+const DateShow = ({
+  colorClass = "text-[#05893E]",
+  sizeClass = "text-[11px] sm:text-[12px]",
+}) => {
   const formattedDate = new Date().toLocaleDateString("bn-BD", {
     weekday: "long",
     day: "numeric",
@@ -11,7 +14,7 @@ const DateShow = () => {
   return (
     <p
       suppressHydrationWarning
-      className="text-[10px] text-[#1D271F] sm:text-[12px] font-medium"
+      className={`${sizeClass} ${colorClass} font-medium leading-none`}
     >
       {formattedDate}
     </p>

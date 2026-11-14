@@ -1,11 +1,11 @@
-import { Hind_Siliguri } from "next/font/google";
+import { Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
-const hindSiliguri = Hind_Siliguri({
-  variable: "--font-hind-siliguri",
+const notoSansBengali = Noto_Sans_Bengali({
+  variable: "--font-noto-sans-bengali",
   subsets: ["bengali", "latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
@@ -20,12 +20,12 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       data-theme="light"
-      className={`${hindSiliguri.variable} h-full antialiased`}
+      className={`${notoSansBengali.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#f0f5f0]">
         <Navbar></Navbar>
         <main className="px-4">
-           {children}
+          {children}
         </main>
         <Toaster
           position="top-right"

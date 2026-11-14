@@ -1,13 +1,11 @@
 import MarqueeText from "react-marquee-text";
 
 const PriceMarquee = async () => {
-  const res = await fetch(
-    "https://openapi.programming-hero.com/api/bazardor/products",
-  );
+  const res = await fetch("https://api.abcz.workers.dev/api/bazardor/products");
 
-if (!res.ok) {
+  if (!res.ok) {
     return (
-      <div className="-mx-4 w-[calc(100%+2rem)] text-center py-2.5 text-xs text-[#1D271F] bg-[#f9faf9] border-y border-[#e1e8e2]">
+      <div className="-mx-4 w-[calc(100%+2rem)] text-center py-2.5 text-xs text-[#1D271F] bg-[#f9faf9] ">
         বাজার দরের লাইভ আপডেট বর্তমানে পাওয়া যাচ্ছে না।
       </div>
     );
@@ -16,7 +14,7 @@ if (!res.ok) {
   const products = await res.json();
 
   return (
-    <div className="-mx-4 w-[calc(100%+2rem)] border-b border-gray-200 py-3 bg-white overflow-hidden">
+    <div className="-mx-4 w-[calc(100%+2rem)] border-none  py-3 bg-white overflow-hidden">
       <MarqueeText
         direction="right"
         duration={20}
@@ -44,10 +42,13 @@ if (!res.ok) {
               </span>
 
               {/* Product Price */}
-              <span className="ml-1.5 text-[12px] text-[#1D271F]">
+              <span
+                className="ml-1.5 text-[12px] text-[#1D271F]"
+              >
                 {formatBanglaNumber(product.today)} টাকা/
                 {getUnit(product.unit)}
               </span>
+              
 
               {/* Price Change */}
               <span
